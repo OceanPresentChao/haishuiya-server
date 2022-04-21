@@ -8,7 +8,7 @@ const customParseFormat = require('dayjs/plugin/customParseFormat')
 const isBetween = require('dayjs/plugin/isBetween')
 dayjs.extend(isBetween)
 dayjs.extend(customParseFormat)
-
+const mongoose = require('mongoose');
 const { processContent } = require("./utils/index");
 const { connectToDB, ActivityModel, getNewUserModel } = require("./database")
 
@@ -142,12 +142,30 @@ module.exports = {
         }
         return btnMsg[eventkey];
     },
-    getActivity(req) {
+    getActivityList(req) {
         return new Promise(async (resolve, reject) => {
             const { page, limit } = req.query;
-            let total = await ActivityModel.count({});
-            let actArr = await ActivityModel.find({}, { __v: 0 }, { skip: limit * (page - 1), limit: limit });
-            resolve({ records: actArr, total, page, limit, size: actArr.length });
+            try {
+                let total = await ActivityModel.count({});
+                let actArr = await ActivityModel.find({}, { __v: 0 }, { skip: limit * (page - 1), limit: limit });
+                resolve({ records: actArr, total, page, limit, size: actArr.length });
+            } catch (error) {
+                console.log(error);
+                reject(error);
+            }
+        });
+    },
+    getActivity(req) {
+        return new Promise(async (resolve, reject) => {
+            const { _id } = req.query;
+            const sid = mongoose.Types.ObjectId(_id);
+            try {
+                let actArr = await ActivityModel.findOne({ _id: sid }, { __v: 0 });
+                resolve({ records: actArr, total: 1, size: 1 });
+            } catch (error) {
+                console.log(error);
+                reject(error);
+            }
         });
     },
     addActivity(req) {
@@ -157,12 +175,17 @@ module.exports = {
             const desc = req.body.desc || "无";
             //create函数返回一个promise
             if (ActivityInfo.has(actName)) { reject('该活动已经存在！'); return; }
-            let promise = await ActivityModel.create({ actCategory, actName, isGoing, ticketNum, startTime, endTime, region, type, desc });
-            let newuserModel = getNewUserModel(actName);
-            await newuserModel.init();
-            console.log(`添加了活动${actName}`);
-            syncAllActivities().catch(err => console.log(err));
-            resolve(promise);
+            try {
+                let promise = await ActivityModel.create({ actCategory, actName, isGoing, ticketNum, startTime, endTime, region, type, desc });
+                let newuserModel = getNewUserModel(actName);
+                await newuserModel.init();
+                console.log(`添加了活动${actName}`);
+                syncAllActivities().catch(err => console.log(err));
+                resolve(promise);
+            } catch (error) {
+                console.log(error);
+                reject(error);
+            }
         });
     },
     deleteActivity(req) {
