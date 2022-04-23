@@ -217,6 +217,17 @@ module.exports = {
                 reject(err);
             }
         });
+    },
+    getActivityStatus(req) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let total = await ActivityModel.count({})
+                let isGoingTotal = await ActivityModel.count({ isGoing: true })
+                resolve({ total, isGoingTotal })
+            } catch (error) {
+                reject(error)
+            }
+        });
     }
 }
 

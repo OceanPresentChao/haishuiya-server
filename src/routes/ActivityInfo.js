@@ -11,6 +11,16 @@ router.get('/activitylist', function (req, res) {
     });
 });
 
+router.get('/actstatus', function (req, res) {
+    service.getActivityStatus(req).then(data => {
+        res.status(200)
+        res.send({ code: 200, preview: data })
+    }).catch(err => {
+        res.status(200)
+        res.send({ code: 400, message: String(err) });
+    })
+})
+
 router.get('/activity', function (req, res) {
     service.getActivity(req).then(data => {
         res.status(200);
