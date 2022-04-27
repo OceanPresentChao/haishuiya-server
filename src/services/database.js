@@ -43,9 +43,19 @@ let ActivitySchema = new mongoose.Schema({
         default: '无'
     }
 });
-exports.ActivityModel = mongoose.model('activity', ActivitySchema);
 
-UserSchema = new mongoose.Schema({
+let AdminSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        default: 'admin'
+    },
+    password: {
+        type: String,
+        required: true
+    }
+})
+
+let UserSchema = new mongoose.Schema({
     name: {
         type: String,
         default: '未命名用户',
@@ -60,9 +70,11 @@ UserSchema = new mongoose.Schema({
     }
 });
 
+exports.AdminModel = mongoose.model('admin', AdminSchema)
+exports.ActivityModel = mongoose.model('activity', ActivitySchema);
 exports.connectToDB = function () {
     return new Promise(async (resolve, reject) => {
-        const DATABASE_URL = "mongodb://localhost:27017/haishuiya";
+        const DATABASE_URL = "mongodb://127.0.0.1:27017/haishuiya";
         mongoose.connection.once('open', () => { console.log('connection established!'); });
         mongoose.connection.once('close', () => { console.log('connection disconnected!'); })
         try {

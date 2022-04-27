@@ -1,7 +1,8 @@
 const express = require('express');
 const activityInfoRouter = require('./ActivityInfo');
 const activityRouter = require('./Activity');
-const router = express.Router(); // 注册路由 
+const adminRouter = require('./Admin')
+const router = express.Router(); // 注册路由
 router.use((req, res, next) => {
     //设置请求头
     res.set({
@@ -11,13 +12,14 @@ router.use((req, res, next) => {
         'Access-Control-Allow-Headers': 'X-Requested-With,Content-Type',
         'Access-Control-Allow-Methods': 'PUT,POST,GET,DELETE,OPTIONS',
         'Content-Type': 'application/json; charset=utf-8',
-        "HaiShuiYa": true
+        "haishuiya": true
     })
     req.method === 'OPTIONS' ? res.status(204).end() : next();
 })
 
 router.use('/api', activityInfoRouter);
 router.use('/api', activityRouter);
+router.use('/api', adminRouter);
 
 router.use((req, res) => {
     res.type('text/plain');

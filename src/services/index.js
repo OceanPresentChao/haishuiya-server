@@ -1,6 +1,6 @@
 const MyDB = require('./database')
 const ActService = require('./activity')
-
+const AdminService = require('./admin')
 function init() {
     MyDB.connectToDB().then(() => {
         ActService.syncAllActivities().catch(err => console.log(err));
@@ -8,4 +8,4 @@ function init() {
 }
 init()
 
-module.exports = { ...ActService }
+module.exports = { ...ActService, ...AdminService }

@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken'); // 引入验证jsonwebtoken模块
 const expressJwt = require('express-jwt'); // 引入express-jwt模块
-const { PRIVATE_KEY } = require('./constant'); // 引入自定义的jwt密钥
+const { PRIVATE_KEY } = require('./config'); // 引入自定义的jwt密钥
 
 // 验证token是否过期
-const jwtAuth = expressJwt({
+
+const jwtAuth = expressJwt.expressjwt({
     // 设置密钥
     secret: PRIVATE_KEY,
     // 设置为true表示校验，false表示不校验
