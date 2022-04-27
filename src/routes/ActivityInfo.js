@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const service = require('../services/index');
 router.get('/activitylist', function (req, res) {
-    console.log("object receive!");
     service.getActivityList(req).then(data => {
         res.status(200);
         res.send({ code: 200, ...data })
