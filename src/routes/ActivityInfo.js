@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const service = require('../service');
+const service = require('../services/index');
 router.get('/activitylist', function (req, res) {
     service.getActivityList(req).then(data => {
         res.status(200);

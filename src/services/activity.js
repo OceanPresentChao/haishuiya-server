@@ -9,13 +9,11 @@ const isBetween = require('dayjs/plugin/isBetween')
 dayjs.extend(isBetween)
 dayjs.extend(customParseFormat)
 const mongoose = require('mongoose');
-const { processContent } = require("./utils/index");
-const { connectToDB, ActivityModel, getNewUserModel } = require("./database")
+const { processContent } = require("../utils/tool");
+const { ActivityModel, getNewUserModel } = require("./database")
 
 let ActivityInfo = new Map();
-connectToDB().then(async () => {
-    syncAllActivities().catch(err => console.log(err));
-});
+
 
 async function syncAllActivities() {
     return new Promise(async (resolve, reject) => {
@@ -38,6 +36,7 @@ function isActValid(actName) {
 }
 
 module.exports = {
+    syncAllActivities,
     getTicket(message) {
         return new Promise(async (resolve, reject) => {
             let response = { type: "抢票", code: undefined, message: "" };

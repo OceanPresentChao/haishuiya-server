@@ -4,7 +4,7 @@ const customParseFormat = require('dayjs/plugin/customParseFormat')
 const isBetween = require('dayjs/plugin/isBetween')
 dayjs.extend(isBetween)
 dayjs.extend(customParseFormat)
-const DATABASE_URL = "mongodb://localhost:27017/haishuiya";
+
 let ActivitySchema = new mongoose.Schema({
     actName: {
         type: String,
@@ -62,12 +62,16 @@ UserSchema = new mongoose.Schema({
 
 exports.connectToDB = function () {
     return new Promise(async (resolve, reject) => {
+        const DATABASE_URL = "mongodb://localhost:27017/haishuiya";
         mongoose.connection.once('open', () => { console.log('connection established!'); });
         mongoose.connection.once('close', () => { console.log('connection disconnected!'); })
-        await mongoose.connect(DATABASE_URL);
-        resolve();
+        try {
+            await mongoose.connect(DATABASE_URL);
+            resolve();
+        } catch (error) {
+            reject(error)
+        }
     });
-
 }
 
 exports.getNewUserModel = function (name) {
