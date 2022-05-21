@@ -22,7 +22,7 @@ async function syncAllActivities() {
         actArr.forEach((val) => {
             ActivityInfo.set(val.actName, val);
         })
-        console.log('ActivityInfo', ActivityInfo);
+        console.log('syncAllActivities', ActivityInfo);
         resolve(true);
     })
 }
@@ -149,7 +149,6 @@ module.exports = {
                 let actArr = await ActivityModel.find({}, { __v: 0 }, { skip: limit * (page - 1), limit: limit });
                 resolve({ records: actArr, total, page, limit, size: actArr.length });
             } catch (error) {
-                console.log(error);
                 reject(error);
             }
         });
@@ -162,7 +161,6 @@ module.exports = {
                 let actArr = await ActivityModel.findOne({ _id: sid }, { __v: 0 });
                 resolve({ records: actArr, total: 1, size: 1 });
             } catch (error) {
-                console.log(error);
                 reject(error);
             }
         });
@@ -182,7 +180,6 @@ module.exports = {
                 syncAllActivities().catch(err => console.log(err));
                 resolve(promise);
             } catch (error) {
-                console.log(error);
                 reject(error);
             }
         });

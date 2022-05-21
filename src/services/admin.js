@@ -1,6 +1,6 @@
 const { md5 } = require('../utils/md5')
 // const { decode } = require('../utils/admin-jwt')
-const { PRIVATE_KEY, JWT_EXPIRED } = require('../utils/config')
+const { PRIVATE_KEY, JWT_EXPIRED, JWT_Algorithm } = require('../utils/config')
 const jwt = require('jsonwebtoken')
 const { AdminModel } = require('./database')
 
@@ -14,12 +14,12 @@ function login(req, res, next) {
             if (!query) {
                 result.code = 401//密码错误
                 result.message = "用户名或密码错误"
-                console.log(userInfo.username, "登录失败");
+                console.log(userInfo.username, "登录失败", result.message);
                 resolve(result)
             } else {
                 result.code = 200
                 result.message = "登录成功"
-                const token = jwt.sign({ username: userInfo.username }, PRIVATE_KEY, { expiresIn: JWT_EXPIRED })
+                const token = jwt.sign({ username: userInfo.username }, PRIVATE_KEY, { expiresIn: JWT_EXPIRED, algorithm: JWT_Algorithm })
                 const adminData = {
                     username: query.username
                 }
@@ -28,7 +28,7 @@ function login(req, res, next) {
                 resolve(result)
             }
         } catch (error) {
-            console.log("Admin Error:", error);
+            console.log("AdminLogin Error:", error);
             reject(error)
         }
     });

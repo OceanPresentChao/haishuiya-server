@@ -9,6 +9,7 @@ router.post('/getTicket', function (req, res) {
     }).catch(err => {
         res.status(200);
         res.send({ code: 400, message: String(err) });
+        console.err(req.originalUrl, err);
     })
 });
 
@@ -19,6 +20,7 @@ router.post('/clockOut', function (req, res) {
     }).catch(err => {
         res.status(200);
         res.send({ code: 400, message: String(err) });
+        console.err(req.originalUrl, err);
     })
 });
 

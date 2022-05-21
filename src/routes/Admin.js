@@ -8,6 +8,7 @@ router.post('/login', function (req, res, next) {
     }).catch(err => {
         res.status(400)
         res.send({ code: 400, message: String(err) });
+        console.err(req.originalUrl, err);
     })
 })
 

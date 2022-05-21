@@ -8,6 +8,7 @@ router.get('/activitylist', function (req, res) {
     }).catch(err => {
         res.status(200);
         res.send({ code: 400, message: String(err) });
+        console.err(req.originalUrl, err);
     });
 });
 
@@ -18,6 +19,7 @@ router.get('/actstatus', function (req, res) {
     }).catch(err => {
         res.status(200)
         res.send({ code: 400, message: String(err) });
+        console.err(req.originalUrl, err);
     })
 })
 
@@ -28,6 +30,7 @@ router.get('/activity', function (req, res) {
     }).catch(err => {
         res.status(200);
         res.send({ code: 400, message: String(err) });
+        console.err(req.originalUrl, err);
 
     });
 });
@@ -39,6 +42,7 @@ router.post('/activity', function (req, res) {
     }).catch(err => {
         res.status(200);
         res.send({ code: 400, message: String(err) });
+        console.err(req.originalUrl, err);
     })
 })
 
@@ -49,6 +53,7 @@ router.delete('/activity', function (req, res) {
     }).catch(err => {
         res.status(200);
         res.send({ code: 400, message: String(err) });
+        console.err(req.originalUrl, err);
     })
 })
 
@@ -59,6 +64,7 @@ router.put('/activity', function (req, res) {
     }).catch(err => {
         res.status(200);
         res.send({ code: 400, message: String(err) });
+        console.err(req.originalUrl, err);
     })
 })
 
