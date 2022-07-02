@@ -16,7 +16,7 @@ router.use((req, res, next) => {
         "haishuiya": true
     })
     req.method === 'OPTIONS' ? res.status(204).end() : next();
-    console.log(req.method, req.originalUrl, "params=", req.params, "query=", req.query, "body=", req.body);
+    console.log(req.method, req.originalUrl, "params=", req.params, "query=", req.query, "body=", req.body)
 })
 router.use(jwtAuth)
 router.use('/api', activityInfoRouter);

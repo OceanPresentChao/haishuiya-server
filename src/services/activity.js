@@ -39,7 +39,7 @@ module.exports = {
     syncAllActivities,
     getTicket(message) {
         return new Promise(async (resolve, reject) => {
-            let response = { type: "抢票", code: undefined, message: "" };
+            let response = { type: "抢票", code: 400, message: "" };
             let fromUserName = message.FromUserName;
             let msgArr = processContent(message.Content);
             let actName = msgArr[1] || '未命名活动';
@@ -48,14 +48,17 @@ module.exports = {
             if (!actInfo || !actInfo.isGoing) {
                 response.code = 401;
                 resolve(response);
+                return
             }//活动暂未开始
             if (actInfo.actCategory !== "抢票") {
                 response.code = 405;
                 resolve(response);
+                return
             }//该活动不是抢票类型
             if (! await isActValid(actInfo.actName)) {
                 response.code = 406;
                 resolve(response);
+                return
             }//活动不在期限内
             let userModel = getNewUserModel(actName);
             let resArr = await userModel.find({ name: fromUserName }, { _id: 0, __v: 0 });
@@ -66,12 +69,14 @@ module.exports = {
                 if (actInfo.num <= 0) {
                     response.code = 403;
                     resolve(response);
+                    return
                 }//票不够了
                 await userModel.create({ name: fromUserName });
                 actInfo.num--;
                 await ActivityModel.updateOne({ actName: actName }, { ticketNum: actInfo.num });
                 response.code = 200;
                 resolve(response);//抢票成功
+                return
             }
         });
     },
@@ -86,14 +91,17 @@ module.exports = {
             if (!actInfo || !actInfo.isGoing) {
                 response.code = 401;
                 resolve(response);
+                return
             }//活动暂未开始
             if (actInfo.actCategory !== "打卡") {
                 response.code = 404;
                 resolve(response);
+                return
             }//活动不是打卡活动
             if (! await isActValid(actInfo.actName)) {
                 response.code = 406;
                 resolve(response);
+                return
             }//活动不在期限内
             let userModel = getNewUserModel(actName);
             let res = await userModel.find({ name: fromUserName }, { _id: 0, __v: 0 });
@@ -103,18 +111,21 @@ module.exports = {
                 if (dayjs(lasttime, 'YYYY年MM月DD日mm分').isSame(dayjs(), "day")) {
                     response.code = 402;
                     resolve(response);//打过卡了
+                    return
                 } else {
                     let day = obj.day + 1;
                     response.totalDay = day;
                     await userModel.findOneAndUpdate({ name: fromUserName }, { day: day, lastTime: dayjs().format('YYYY年MM月DD日mm分') });
                     response.code = 403;
                     resolve(response);//新的一天打卡
+                    return
                 }
             } else {
                 await userModel.create({ name: fromUserName, day: 1 });
                 response.totalDay = 1;
                 response.code = 403;
                 resolve(response);//第一次打卡成功
+                return
             }
         });
     },

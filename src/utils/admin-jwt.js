@@ -23,7 +23,9 @@ const jwtAuth = expressJwt.expressjwt({
     path: [
         '/',
         '/api/login',
-        '/api/resetPwd'
+        '/api/resetPwd',
+        '/api/clockOut',
+        '/api/getTicket',
     ]
 })
 
