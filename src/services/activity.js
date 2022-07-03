@@ -20,7 +20,7 @@ async function syncAllActivities() {
         let actArr = await ActivityModel.find({}, { _id: 0, __v: 0 });
         ActivityInfo.clear();
         actArr.forEach((val) => {
-            ActivityInfo.set(val.actName, val);
+            ActivityInfo.set(val.name, val);
         })
         console.log('syncAllActivities', ActivityInfo);
         resolve(true);
@@ -29,8 +29,8 @@ async function syncAllActivities() {
 //检查活动是否在期限内
 function isActValid(actName) {
     return new Promise(async (resolve, reject) => {
-        let activity = await ActivityModel.findOne({ actName }, { _id: 0, __v: 0 });
-        let ans = dayjs().isBetween(dayjs(activity.startTime, 'YYYY年MM月DD日mm分'), dayjs(activity.endTime, 'YYYY年MM月DD日mm分'), 'minute', '[]');
+        let activity = await ActivityModel.findOne({ name: actName }, { _id: 0, __v: 0 });
+        let ans = dayjs().isBetween(dayjs(activity.startTime, 'YYYY年MM月DD日mm分'), dayjs(activity.during, 'YYYY年MM月DD日mm分'), 'minute', '[]');
         resolve(ans);
     });
 }
@@ -73,7 +73,7 @@ module.exports = {
                 }//票不够了
                 await userModel.create({ name: fromUserName });
                 actInfo.num--;
-                await ActivityModel.updateOne({ actName: actName }, { ticketNum: actInfo.num });
+                await ActivityModel.updateOne({ name: actName }, { ticketNum: actInfo.num });
                 response.code = 200;
                 resolve(response);//抢票成功
                 return
@@ -184,7 +184,7 @@ module.exports = {
             //create函数返回一个promise
             if (ActivityInfo.has(actName)) { reject('该活动已经存在！'); return; }
             try {
-                let promise = await ActivityModel.create({ actCategory, actName, isGoing, ticketNum, startTime, endTime, region, type, desc });
+                let promise = await ActivityModel.create({ category: actCategory, name: actName, isHold: isGoing, tickets: ticketNum, startTime, during: endTime, region, isOnline: type, desc });
                 let newuserModel = getNewUserModel(actName);
                 await newuserModel.init();
                 console.log(`添加了活动${actName}`);
@@ -199,7 +199,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             try {
                 const { actName } = req.query;
-                await ActivityModel.deleteOne({ actName });
+                await ActivityModel.deleteOne({ name: actName });
                 let promise = await mongoose.connection.dropCollection(actName);
                 syncAllActivities().catch(err => console.log(err));
                 console.log(`删除了活动${actName}`);
@@ -229,7 +229,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             try {
                 let total = await ActivityModel.count({})
-                let isGoingTotal = await ActivityModel.count({ isGoing: true })
+                let isGoingTotal = await ActivityModel.count({ isHold: true })
                 resolve({ total, isGoingTotal })
             } catch (error) {
                 reject(error)

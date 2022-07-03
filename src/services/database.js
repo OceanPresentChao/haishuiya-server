@@ -6,19 +6,19 @@ dayjs.extend(isBetween)
 dayjs.extend(customParseFormat)
 
 let ActivitySchema = new mongoose.Schema({
-    actName: {
+    name: {
         type: String,
         default: '未命名活动',
     },
-    ticketNum: {
+    ticket: {
         type: Number,
         default: 0,
     },
-    actCategory: {
+    category: {
         type: String,
         default: "未知类型",
     },
-    isGoing: {
+    isHold: {
         type: Boolean,
         default: true,
     },
@@ -26,13 +26,13 @@ let ActivitySchema = new mongoose.Schema({
         type: String,
         default: dayjs().format('YYYY年MM月DD日mm分')
     },
-    endTime: {
-        type: String,
-        default: dayjs().format('YYYY年MM月DD日mm分')
+    during: {
+        type: [String],
+        default: [dayjs().format('YYYY年MM月DD日mm分'), dayjs().format('YYYY年MM月DD日mm分')]
     },
-    type: {
-        type: String,
-        default: '线上'
+    isOnline: {
+        type: Boolean,
+        default: false
     },
     region: {
         type: String,
@@ -43,17 +43,6 @@ let ActivitySchema = new mongoose.Schema({
         default: '无'
     }
 });
-
-let AdminSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        default: 'admin'
-    },
-    password: {
-        type: String,
-        required: true
-    }
-})
 
 let UserSchema = new mongoose.Schema({
     name: {
@@ -70,7 +59,6 @@ let UserSchema = new mongoose.Schema({
     }
 });
 
-exports.AdminModel = mongoose.model('admin', AdminSchema)
 exports.ActivityModel = mongoose.model('activity', ActivitySchema);
 exports.connectToDB = function () {
     return new Promise(async (resolve, reject) => {

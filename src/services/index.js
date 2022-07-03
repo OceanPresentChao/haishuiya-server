@@ -1,7 +1,7 @@
 const MyDB = require('./database')
 const ActService = require('./activity')
 const AdminService = require('./admin')
-function init() {
+function initDB() {
     MyDB.connectToDB().then(() => {
         ActService.syncAllActivities().catch(err => console.log(err));
         console.log("连接数据库成功");
@@ -9,6 +9,6 @@ function init() {
         console.err("连接数据库失败", err);
     });
 }
-init()
+initDB()
 
 module.exports = { ...ActService, ...AdminService }
