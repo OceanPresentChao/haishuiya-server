@@ -27,11 +27,12 @@ router.use((err, req, res, next) => {
     // 自定义用户认证失败的错误返回
     console.log('Router err===', err);
     if (err && err.name === 'UnauthorizedError') {
-        const { status = 501, message } = err;
-        // 抛出501异常
-        res.status(status).json({
+        const { status, message } = err;
+        // 抛出401异常
+        res.status(200)
+        res.send({
             code: status,
-            msg: 'token失效，请重新登录',
+            message: 'token失效，请重新登录',
             data: null
         })
     } else {
